@@ -32,14 +32,11 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
 ///* OPTIONS: { [min_tag_id], [max_tag_id] }; */
 ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pagination, remaining, limit) {
 
-<<<<<<< HEAD
 	var data = medias;
 	console.log( data );
 
 });
-=======
-// Call TripAdvisor API
->>>>>>> b80d694aabe000407eedb2d51d77307f28a13109
+
 
 ///* OPTIONS: { [count], [min_timestamp], [max_timestamp], [min_id], [max_id] }; */
 //  ig.user_media_recent(wanghongids[i], {count: 1}, function(err, medias, pagination, remaining, limit) 
@@ -54,8 +51,9 @@ for (i = 0; i < attractionID.length; i++) {
 
   Attractions.findOneAndUpdate(
   {
-    userid:attractionID[i],
+     userid:attractionID[i],
   },
+
   {
     username:"user" + 2 * i,
   }, function (err, found) {
@@ -64,6 +62,7 @@ for (i = 0; i < attractionID.length; i++) {
     }
     else if(!found) {
       console.log("Not Exist");
+     
       Attractions.create (
       {
         username:"user" + i,
@@ -74,6 +73,7 @@ for (i = 0; i < attractionID.length; i++) {
         }
       });
     }
+
     else {
       console.log("Exist");
     }
