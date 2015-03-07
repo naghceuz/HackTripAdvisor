@@ -10,11 +10,13 @@ db.once('open', function (callback) {
 
 // Data Element Style 
 var AttractionSchema = new mongoose.Schema({
-/*******************************************
-  id: String,
   username: String,
-  like: Number 
-*******************************************/
+  userid: String,
+  pic_id: Number,
+  tag:Number,
+  likes:Number,
+  pic_link:String
+
 });
 
 // A model is like a class with which we construct documents
