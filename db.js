@@ -47,27 +47,35 @@ ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pa
 // Test Mongoose Write(not exist) and Update(exist)
 var attractionID = ['260732813','559886320','138975020','228499567'];
 
+
 for (i = 0; i < attractionID.length; i++) {
 
+  // Model.findOneAndUpdate([conditions], [update], [options], [callback])
   Attractions.findOneAndUpdate(
+  // [conditions]
   {
      userid:attractionID[i],
   },
-
+  // [update]
   {
     username:"user" + 2 * i,
-  }, function (err, found) {
+  }, 
+  // [callback] if document exists, callback--'found' will be null
+  function (err, found) {
     if(err) {
       return console.log("MongoDB Error: " + err);
     }
-    else if(!found) {
+    else if(!found) {   // 'found' is null, then create new
       console.log("Not Exist");
      
+      // Model.create(doc(s), [callback])
       Attractions.create (
       {
         username:"user" + i,
         userid:attractionID[i],
-      }, function (err, createItem) {
+      }, 
+      // [callback]
+      function (err, createItem) {
         if(err) {
                 return console.log("MongoDB Error: " + err);
         }
