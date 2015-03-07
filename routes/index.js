@@ -14,12 +14,13 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
-exports.index = function(req, res){
-  Attractions.find( function(error, todos){
+
+exports.welcome = function(req, res){
+	Attractions.find( function(error, todos){
   	    console.log(todos);
-  	res.render('index', { title: 'ToDo List with Mongoose and Express', h1: 'ToDo List', todos: todos});
+  	res.render('welcome', { title: 'ToDo List with Mongoose and Express', h1: 'ToDo List', todos: todos});
   });
-};
+}
 
 
 // exports.index = function(req,res) {
