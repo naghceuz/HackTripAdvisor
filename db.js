@@ -64,8 +64,6 @@ for (var i = 0; i < attractionTag.length; i++) {
 function instagram(i) {
   ig.tag_media_recent(attractionTag[i] , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
     loopMongooseWrite(medias, medias.length);
-    // console.log("***\n***\n***\n***\n***\n" + attractionTag[i]);
-    // console.log(medias[0].user.id);
   });
 }
 
