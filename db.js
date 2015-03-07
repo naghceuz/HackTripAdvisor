@@ -31,7 +31,7 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
          client_secret: '8436c923ddbb4b928a5a065e2055810c' });
 
 
-
+// Call TripAdvisor API
 
 
 
