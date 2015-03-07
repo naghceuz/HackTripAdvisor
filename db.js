@@ -70,13 +70,16 @@ function arrayAdd(q, obj) {
 
 // var attractionTag = attractionArray;
 
-
+var tempMedias = [];
+ig.tag_media_recent('fenwaypart' , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
+  tempMedias = medias;
+});
 /*
 ** Write into Databse
 */
 
 // Regularly Fetch Data from Instagram and Write into Database
-function loop() {
+function delay() {
 
 // never has lines more than simply calling a function in for loop in JavaScript
 for (var i = 0; i < attractionTag.length; i++) {
@@ -87,6 +90,9 @@ for (var i = 0; i < attractionTag.length; i++) {
 function instagram(i, tag) {
   // console.log(tag);
   ig.tag_media_recent(tag , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
+    if (!medias) {
+      medias = tempMedias;
+    }
     loopMongooseWrite(medias, medias.length, tag);
   });
 }
@@ -146,8 +152,8 @@ function mongooseWrite(medias, j, tag) {
         }
     });
 }
-}
-var interval = setInterval(loop, 1000);
+// }
+// var interval = setInterval(loop, 1000);
 
 
 
@@ -157,7 +163,7 @@ var interval = setInterval(loop, 1000);
 ** Read from Database
 */
 
-function delay () {
+// function delay () {
 var bestPics = [];
 
 for (var k = 0; k < attractionTag.length; k++) {
@@ -212,4 +218,22 @@ function mostLikes(pics, k) {
 
 module.exports = bestPics;
 }
-var delayTime = setTimeout(delay, 3000);            
+var delayTime = setTimeout(delay, 3000); 
+
+
+
+
+
+
+// var productSchema = new mongoose.Schema({
+//     name: String,
+//     description: String
+// });
+// var Product = mongoose.model('Product', productSchema);
+
+
+
+
+
+
+
