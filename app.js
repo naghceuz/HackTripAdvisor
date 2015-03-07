@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.get('/',routes);
 var routes = require('./routes/index');
 app.use('/', routes);
-app.use('/welcome', routes)
+//app.use('/welcome', routes)
 
 // app.get('/welcome', routes.welcome);
 
