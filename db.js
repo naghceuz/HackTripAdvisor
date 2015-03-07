@@ -71,7 +71,7 @@ function arrayAdd(q, obj) {
 // var attractionTag = attractionArray;
 
 var tempMedias = [];
-ig.tag_media_recent('fenwaypart' , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
+ig.tag_media_recent('fenwaypark' , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
   tempMedias = medias;
 });
 /*
