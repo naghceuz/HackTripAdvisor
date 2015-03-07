@@ -16,6 +16,7 @@
     "mongodb": "*",
     "mongoose": "*",
     "instagram-node": "*",
-    "superagent": "*"
+    "superagent": "*",
+    "request": "*"
   }
 }

@@ -8,8 +8,6 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 
 var app = express();
-require('./db');
-
 
 
 // Call db.js

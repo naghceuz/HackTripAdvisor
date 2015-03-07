@@ -28,13 +28,10 @@ ig.use({ access_token: '559886220.51c66ef.1503ba29c29748d6930e9e49a7043b2d' });
 ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
          client_secret: '8436c923ddbb4b928a5a065e2055810c' });
 
-// Test Mongoose Write(not exist) and Update(exist)
-//five tag I will input for testing
-//tag 1: #fenwaypark
-//tag 2: #mfa
-//tag 3: #IsabellaStewartGardner
-//tag 4: #Newbury Street
-//tag 5: #tdgra
+
+
+require('./tripAdvisor');
+
 var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner','IsabellaStewartGardner',
               'NewburyStreet','tdgra'];
 
@@ -87,10 +84,6 @@ function mongooseWrite(i) {
       pic_link:theData[i].link,
       img_link:theData[i].images.standard_resolution.url,
       likes:theData[i].likes.count
-
-});
-
-
   }, 
   // [callback] if document exists, callback--'found' will be null
   function (err, found) {
@@ -126,6 +119,7 @@ function mongooseWrite(i) {
       console.log("Exist");
     }
   });
+});
 }
 
 
