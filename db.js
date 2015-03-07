@@ -33,7 +33,7 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
 ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pagination, remaining, limit) {
 
 	var data = medias;
-	console.log( data );
+	// console.log( data );
 
 });
 
@@ -49,6 +49,12 @@ var attractionID = ['260732813','559886320','138975020','228499567'];
 
 
 for (i = 0; i < attractionID.length; i++) {
+  mongooseWrite(i);
+}
+
+
+function mongooseWrite(i) {
+  // console.log("i = " + i);
 
   // Model.findOneAndUpdate([conditions], [update], [options], [callback])
   Attractions.findOneAndUpdate(
@@ -62,12 +68,15 @@ for (i = 0; i < attractionID.length; i++) {
   }, 
   // [callback] if document exists, callback--'found' will be null
   function (err, found) {
+    // console.log("i = " + i);
+    
     if(err) {
       return console.log("MongoDB Error: " + err);
     }
     else if(!found) {   // 'found' is null, then create new
       console.log("Not Exist");
-     
+      //console.log('i = ' + i); 
+
       // Model.create(doc(s), [callback])
       Attractions.create (
       {
@@ -81,7 +90,6 @@ for (i = 0; i < attractionID.length; i++) {
         }
       });
     }
-
     else {
       console.log("Exist");
     }
