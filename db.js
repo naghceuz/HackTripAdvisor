@@ -32,27 +32,62 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
 
 
 
-/*************
-**************
-**************/
-// Call tripAdvisor
-// var attractionTag = require('./tripAdvisor');
-var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner',
-              'NewburyStreet','tdgarden'];
+/*
+** Use tripAdvisor API
+*/
 
+var request = require('request');
+
+var attractionTag = [];
+
+//function attractionArray {
+request({url: 'http://api.tripadvisor.com/api/partner/2.0/location/60745/attractions?key=HackTripAdvisor-ade29ff43aed', json: true}, function(err, res, json) {
+    if (err) {
+        throw err;
+    }
+    // console.log(json);
+    for (var q = 0; q < 20; q++) {
+      arrayAdd(q, json);
+    }
+    // return attractionTag;
+});
+//}
+
+function arrayAdd(q, obj) {
+  var s = obj.data[q].name;
+  s = s.replace(/\W/g, ''); 
+  s = s.toLowerCase();
+  s = s.toString();  // data type is different. convert json to string.
+  attractionTag.push(s);
+  // console.log(attractionTag);
+  // return attractionTag;
+}
+
+// var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner',
+//               'NewburyStreet','tdgarden'];
+
+// var attractionArray = require('./tripAdvisor');
+
+// var attractionTag = attractionArray;
 
 
 /*
 ** Write into Databse
 */
+
+// Regularly Fetch Data from Instagram and Write into Database
+function loop() {
+
+// never has lines more than simply calling a function in for loop in JavaScript
 for (var i = 0; i < attractionTag.length; i++) {
-  instagram(i);
+  instagram(i, attractionTag[i]);
 }
 
 
-function instagram(i) {
-  ig.tag_media_recent(attractionTag[i] , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
-    loopMongooseWrite(medias, medias.length, attractionTag[i]);
+function instagram(i, tag) {
+  // console.log(tag);
+  ig.tag_media_recent(tag , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
+    loopMongooseWrite(medias, medias.length, tag);
   });
 }
 
@@ -65,6 +100,7 @@ function loopMongooseWrite(medias, length, tag) {
 
 
 function mongooseWrite(medias, j, tag) {
+    // console.log(tag);
 
     // Model.findOneAndUpdate([conditions], [update], [options], [callback])
     Attractions.findOneAndUpdate(
@@ -110,6 +146,8 @@ function mongooseWrite(medias, j, tag) {
         }
     });
 }
+}
+var interval = setInterval(loop, 1000);
 
 
 
@@ -120,15 +158,15 @@ function mongooseWrite(medias, j, tag) {
 */
 var bestPics = [];
 
-for (var i = 0; i < attractionTag.length; i++) {
-  var bestPicsNow = mongooseLikes(attractionTag[i], i);
+for (var k = 0; k < attractionTag.length; k++) {
+  var bestPicsNow = mongooseLikes(attractionTag[k], k);
   // console.log("***\n***\n***\n***\n***\n" + i);
   // console.log(bestPicsNow);
 }
                                                    
-function mongooseLikes(tag, i) {
+function mongooseLikes(tag, k) {
   // tag传进来了   console.log(tag);
-  // i传进来了     console.log(i);
+  // i传进来了     console.log(k);
   Attractions.find(
   {  // [conditions]
       tagName:tag,
@@ -142,26 +180,26 @@ function mongooseLikes(tag, i) {
         }
         else {
           // console.log(pics);
-          // i传进来了    console.log(i);
+          // i传进来了    console.log(k);
           // console.log(tag);
-          var mostLikesPic = mostLikes(pics, i); 
+          var mostLikesPic = mostLikes(pics, k); 
           bestPics.push(mostLikesPic);
-          // console.log("***\n***\n***\n***\n***\n" + i);
+          // console.log("***\n***\n***\n***\n***\n" + k);
           // console.log(bestPics);
           return bestPics;
         }
     });
 }
 
-function mostLikes(pics, i) {
-  // i传进来了    console.log(i);
+function mostLikes(pics, k) {
+  // i传进来了    console.log(k);
   var best = pics[0];
-  // console.log("***\n***\n***\n***\n***\n" + i);
+  // console.log("***\n***\n***\n***\n***\n" + k);
   // console.log(best);
 
-  for (var j = 0; j < pics.length; j++) {
-    if (pics[j].likes > best.likes) {
-      best = pics[j];
+  for (var p = 0; p < pics.length; p++) {
+    if (pics[p].likes > best.likes) {
+      best = pics[p];
     }
   }
   // console.log(best);
