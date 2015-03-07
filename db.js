@@ -156,6 +156,8 @@ var interval = setInterval(loop, 1000);
 /*
 ** Read from Database
 */
+
+function delay () {
 var bestPics = [];
 
 for (var k = 0; k < attractionTag.length; k++) {
@@ -185,7 +187,7 @@ function mongooseLikes(tag, k) {
           var mostLikesPic = mostLikes(pics, k); 
           bestPics.push(mostLikesPic);
           // console.log("***\n***\n***\n***\n***\n" + k);
-          // console.log(bestPics);
+          console.log(bestPics);
           return bestPics;
         }
     });
@@ -205,6 +207,9 @@ function mostLikes(pics, k) {
   // console.log(best);
   return best;
 }
-                     
+
+        
 
 module.exports = bestPics;
+}
+var delayTime = setTimeout(delay, 3000);            
