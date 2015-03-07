@@ -30,6 +30,14 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
          client_secret: '8436c923ddbb4b928a5a065e2055810c' });
 
 
+ig.tag_media_recent('HackTripAdvisor', [options,] function(err, medias, pagination, remaining, limit) {
+
+	var data = medias;
+
+	console.log("这是现在的返还值" ＋ data );
+
+});
+
 
 
 
