@@ -17,6 +17,5 @@ function arrayAdd(i, obj) {
   console.log(attractionsArray[i]);
 }
 
-// console.log(attractionsArray[0]);
 
 module.exports = attractionsArray;

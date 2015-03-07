@@ -32,13 +32,14 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
 
 // require('./tripAdvisor');
 
+
 var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner',
               'NewburyStreet','tdgarden'];
 
 
 
 
-for (i = 0; i < attractionTag.length; i++) {
+for (var i = 0; i < attractionTag.length; i++) {
   instagram(i);
 }
 
@@ -62,29 +63,36 @@ for (i = 0; i < attractionTag.length; i++) {
 
 function instagram(i) {
   ig.tag_media_recent(attractionTag[i] , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
-    mongooseWrite(medias);
+    loopMongooseWrite(medias, medias.length);
     // console.log("***\n***\n***\n***\n***\n" + attractionTag[i]);
     // console.log(medias[0].user.id);
   });
 }
 
 
-function mongooseWrite(medias) {
+function loopMongooseWrite(medias, length) {
+  for (var j = 0; j < length; j++) {
+    mongooseWrite(medias, j);
+  }
+}
+
+
+function mongooseWrite(medias, j) {
 
     // Model.findOneAndUpdate([conditions], [update], [options], [callback])
     Attractions.findOneAndUpdate(
     {  // [conditions]
-      userid:medias[0].user.id,
-      // pic_id:medias[0].id,
+      userid:medias[j].user.id,
+      // pic_id:medias[j].id,
     },
     {  // [update]
-      userid:medias[0].user.id,
-      username:medias[0].user.username,
-      // pic_id: medias[0].id,
-      pic_link:medias[0].link,
-      img_link:medias[0].images.standard_resolution.url,
-      likes:medias[0].likes.count,
-      tagName:medias[0].tags[0],
+      userid:medias[j].user.id,
+      username:medias[j].user.username,
+      // pic_id: medias[j].id,
+      pic_link:medias[j].link,
+      img_link:medias[j].images.standard_resolution.url,
+      likes:medias[j].likes.count,
+      tagName:medias[j].tags[0],
     }, // [callback] if document exists, callback--'found' will be null
       function (err, found) {
         // console.log("i = " + i);
@@ -96,13 +104,13 @@ function mongooseWrite(medias) {
           //console.log('i = ' + i); 
           Attractions.create (  // Model.create(doc(s), [callback])
           {
-            userid:medias[0].user.id,
-            username:medias[0].user.username,
-            // pic_id: medias[0].id,
-            pic_link:medias[0].link,
-            img_link:medias[0].images.standard_resolution.url,
-            likes:medias[0].likes.count,
-            tagName:medias[0].tags[0],
+            userid:medias[j].user.id,
+            username:medias[j].user.username,
+            // pic_id: medias[j].id,
+            pic_link:medias[j].link,
+            img_link:medias[j].images.standard_resolution.url,
+            likes:medias[j].likes.count,
+            tagName:medias[j].tags[0],
           }, // [callback]
             function (err, createItem) {
               if(err) {
