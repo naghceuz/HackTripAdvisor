@@ -23,19 +23,11 @@ var Attractions = mongoose.model('Attractions', AttractionSchema);
 
 
 // Call Instagram API
-var ig = require('instagram-node').instagram();
+ig = require('instagram-node').instagram();
 
 ig.use({ access_token: '559886220.51c66ef.1503ba29c29748d6930e9e49a7043b2d' });
 ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
          client_secret: '8436c923ddbb4b928a5a065e2055810c' });
-
-///* OPTIONS: { [min_tag_id], [max_tag_id] }; */
-ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pagination, remaining, limit) {
-
-	var data = medias;
-	// console.log( data );
-
-});
 
 
 ///* OPTIONS: { [count], [min_timestamp], [max_timestamp], [min_id], [max_id] }; */
@@ -45,26 +37,54 @@ ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pa
 
 
 // Test Mongoose Write(not exist) and Update(exist)
-var attractionID = ['260732813','559886320','138975020','228499567'];
+
+//five tag I will input for testing
+//tag 1: #fenwaypark
+//tag 2: #mfa
+//tag 3: #IsabellaStewartGardner
+//tag 4: #Newbury Street
+//tag 5: #tdgra
+var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner','IsabellaStewartGardner',
+              'NewburyStreet','tdgra'];
 
 
-for (i = 0; i < attractionID.length; i++) {
+for (i = 0; i < attractionTag.length; i++) {
+  ///* OPTIONS: { [min_tag_id], [max_tag_id] }; */
   mongooseWrite(i);
+  console.log("function call")
 }
+
 
 
 function mongooseWrite(i) {
   // console.log("i = " + i);
 
+    ig.tag_media_recent('fenwaypark', {min_tag_id:100}, function(err, medias, pagination, remaining, limit) {
+    var data = medias;
+    console.log(data);
+
+    //解析data, 要拿到以下的数据
+  // username: String,
+  // userid: String,
+  // pic_id: Number,
+  // tag:Number,
+  // likes:Number,
+  // pic_link:String
+
+
   // Model.findOneAndUpdate([conditions], [update], [options], [callback])
   Attractions.findOneAndUpdate(
   // [conditions]
   {
-     userid:attractionID[i],
+     userid:attractionTag[i],
   },
   // [update]
   {
     username:"user" + 2 * i,
+  
+});
+
+
   }, 
   // [callback] if document exists, callback--'found' will be null
   function (err, found) {
@@ -81,7 +101,7 @@ function mongooseWrite(i) {
       Attractions.create (
       {
         username:"user" + i,
-        userid:attractionID[i],
+        userid:attractionTag[i],
       }, 
       // [callback]
       function (err, createItem) {
