@@ -10,18 +10,17 @@ db.once('open', function (callback) {
 
 // Data Element Style 
 var AttractionSchema = new mongoose.Schema({
-  username: String,
-  userid: String,
-  pic_id: Number,
-  tag:Number,
-  likes:Number,
-  pic_link:String
+    userid:Number,
+    username:String,
+    pic_id:Number,
+    pic_link:String,
+    img_link:String,
+    likes:Number,
+    tagName:String
 });
 
 // A model is like a class with which we construct documents
 var Attractions = mongoose.model('Attractions', AttractionSchema);
-
-
 // Call Instagram API
 ig = require('instagram-node').instagram();
 
@@ -29,15 +28,7 @@ ig.use({ access_token: '559886220.51c66ef.1503ba29c29748d6930e9e49a7043b2d' });
 ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
          client_secret: '8436c923ddbb4b928a5a065e2055810c' });
 
-
-///* OPTIONS: { [count], [min_timestamp], [max_timestamp], [min_id], [max_id] }; */
-//  ig.user_media_recent(wanghongids[i], {count: 1}, function(err, medias, pagination, remaining, limit) 
-//  {}
-// );
-
-
 // Test Mongoose Write(not exist) and Update(exist)
-
 //five tag I will input for testing
 //tag 1: #fenwaypark
 //tag 2: #mfa
@@ -51,37 +42,52 @@ var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner','IsabellaStewar
 for (i = 0; i < attractionTag.length; i++) {
   ///* OPTIONS: { [min_tag_id], [max_tag_id] }; */
   mongooseWrite(i);
-  console.log("function call")
 }
 
 
 
+ig.tag_media_recent("HackTripAdvisor" , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
+    var theData = medias;
+    var theDatelength = theData.length
+    
+    console.log(theData)
+    console.log("Data length is " + theDatelength)
+    console.log("userid " + theData[0].user.id)
+    console.log("username " + theData[0].user.username)
+    console.log("pic_id: " + theData[0].id)
+    console.log("userid in data1 " + theData[1].user.id)
+     // pic_link:data[0].link,
+     // img_link:data[0].images.standard_resolution.url,
+     // likes:data[0].likes.count,
+     // tagName:data[0].tags[0]
+
+});
+
+
+
+
 function mongooseWrite(i) {
-  // console.log("i = " + i);
 
-    ig.tag_media_recent('fenwaypark', {min_tag_id:100}, function(err, medias, pagination, remaining, limit) {
-    var data = medias;
-    console.log(data);
-
-    //解析data, 要拿到以下的数据
-  // username: String,
-  // userid: String,
-  // pic_id: Number,
-  // tag:Number,
-  // likes:Number,
-  // pic_link:String
-
+  //attractionTag[i]  = "fenwaypark"
+    ig.tag_media_recent(attractionTag[i] , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
+    var theData = medias;
 
   // Model.findOneAndUpdate([conditions], [update], [options], [callback])
   Attractions.findOneAndUpdate(
   // [conditions]
   {
-     userid:attractionTag[i],
+     // userid:theData[i].user.id
+     // pic_id:data[0].id
   },
   // [update]
   {
-    username:"user" + 2 * i,
-  
+      userid:theData[i].user.id,
+      username:theData[i].user.username,
+      pic_id: theData[i].id,
+      pic_link:theData[i].link,
+      img_link:theData[i].images.standard_resolution.url,
+      likes:theData[i].likes.count
+
 });
 
 
@@ -100,8 +106,14 @@ function mongooseWrite(i) {
       // Model.create(doc(s), [callback])
       Attractions.create (
       {
-        username:"user" + i,
-        userid:attractionTag[i],
+       
+      userid:theData[i].user.id,
+      username:theData[i].user.username,
+      pic_id: theData[i].id,
+      pic_link:theData[i].link,
+      img_link:theData[i].images.standard_resolution.url,
+      likes:theData[i].likes.count
+
       }, 
       // [callback]
       function (err, createItem) {
@@ -115,7 +127,6 @@ function mongooseWrite(i) {
     }
   });
 }
-
 
 
 
