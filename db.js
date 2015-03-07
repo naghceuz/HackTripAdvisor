@@ -32,10 +32,14 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
 ///* OPTIONS: { [min_tag_id], [max_tag_id] }; */
 ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pagination, remaining, limit) {
 
+<<<<<<< HEAD
 	var data = medias;
 	console.log( data );
 
 });
+=======
+// Call TripAdvisor API
+>>>>>>> b80d694aabe000407eedb2d51d77307f28a13109
 
 ///* OPTIONS: { [count], [min_timestamp], [max_timestamp], [min_id], [max_id] }; */
 //  ig.user_media_recent(wanghongids[i], {count: 1}, function(err, medias, pagination, remaining, limit) 
