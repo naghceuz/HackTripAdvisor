@@ -16,7 +16,6 @@ var AttractionSchema = new mongoose.Schema({
   tag:Number,
   likes:Number,
   pic_link:String
-
 });
 
 // A model is like a class with which we construct documents
@@ -29,11 +28,6 @@ var ig = require('instagram-node').instagram();
 ig.use({ access_token: '559886220.51c66ef.1503ba29c29748d6930e9e49a7043b2d' });
 ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
          client_secret: '8436c923ddbb4b928a5a065e2055810c' });
-
-
-
-
-
 
 
 
