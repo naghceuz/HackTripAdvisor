@@ -29,15 +29,18 @@ ig.use({ access_token: '559886220.51c66ef.1503ba29c29748d6930e9e49a7043b2d' });
 ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
          client_secret: '8436c923ddbb4b928a5a065e2055810c' });
 
-
-ig.tag_media_recent('HackTripAdvisor', [options,] function(err, medias, pagination, remaining, limit) {
+///* OPTIONS: { [min_tag_id], [max_tag_id] }; */
+ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pagination, remaining, limit) {
 
 	var data = medias;
-
-	console.log("这是现在的返还值" ＋ data );
+	console.log( data );
 
 });
 
+///* OPTIONS: { [count], [min_timestamp], [max_timestamp], [min_id], [max_id] }; */
+//  ig.user_media_recent(wanghongids[i], {count: 1}, function(err, medias, pagination, remaining, limit) 
+//  {}
+// );
 
 
 

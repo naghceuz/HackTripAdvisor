@@ -245,13 +245,14 @@ https://instagram.com/developer/endpoints/tags/#get_tags_media_recent
 
 https://github.com/totemstech/instagram-node
 
-ig.tag_media_recent('tag', [options,] function(err, medias, pagination, remaining, limit) {});
+ig.tag_media_recent('tag', [  [10], [20] ] function(err, medias, pagination, remaining, limit) {});
 
 ig.tag_search('query', function(err, result, remaining, limit) {});
 
 
 return 的medias就是我们要的东西
 
+ig.tag_media_recent('tag', [options,] function(err, medias, pagination, remaining, limit) {});
 
 
 
