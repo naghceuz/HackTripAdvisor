@@ -12,7 +12,7 @@ db.once('open', function (callback) {
 var AttractionSchema = new mongoose.Schema({
     userid:Number,
     username:String,
-    pic_id:Number,
+    // pic_id:Number,
     pic_link:String,
     img_link:String,
     likes:Number,
@@ -32,54 +32,75 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
 
 
 
-/*************
-**************
-**************/
-// Call tripAdvisor
-// var attractionTag = require('./tripAdvisor');
-var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner',
-              'NewburyStreet','tdgarden'];
+/*
+** Use tripAdvisor API
+*/
+
+var request = require('request');
+
+var attractionTag = [];
+
+//function attractionArray {
+request({url: 'http://api.tripadvisor.com/api/partner/2.0/location/60745/attractions?key=HackTripAdvisor-ade29ff43aed', json: true}, function(err, res, json) {
+    if (err) {
+        throw err;
+    }
+    // console.log(json);
+    for (var q = 0; q < 20; q++) {
+      arrayAdd(q, json);
+    }
+    // return attractionTag;
+});
+//}
+
+function arrayAdd(q, obj) {
+  var s = obj.data[q].name;
+  s = s.replace(/\W/g, ''); 
+  s = s.toLowerCase();
+  s = s.toString();  // data type is different. convert json to string.
+  attractionTag.push(s);
+  // console.log(attractionTag);
+  // return attractionTag;
+}
+
+// var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner',
+//               'NewburyStreet','tdgarden'];
+
+// var attractionArray = require('./tripAdvisor');
+
+// var attractionTag = attractionArray;
 
 
+/*
+** Write into Databse
+*/
 
+// Regularly Fetch Data from Instagram and Write into Database
+function loop() {
 
+// never has lines more than simply calling a function in for loop in JavaScript
 for (var i = 0; i < attractionTag.length; i++) {
-  instagram(i);
+  instagram(i, attractionTag[i]);
 }
 
 
-
-// ig.tag_media_recent("HackTripAdvisor" , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
-
-//     var mediasLength = medias.length;
-    
-//     console.log("Data length is " + mediasLength);
-//     console.log("userid = " + medias[0].user.id);
-//     console.log("username = " + medias[0].user.username);
-//     console.log("pic_id = " + medias[0].id);
-//     console.log("pic_link = " + medias[0].link);
-//     console.log("img_link = " + medias[0].images.standard_resolution.url);
-//     console.log("likes = " + medias[0].likes.count);
-//     console.log("tagName = " + medias[0].tags[0]);
-
-// });
-
-
-function instagram(i) {
-  ig.tag_media_recent(attractionTag[i] , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
-    loopMongooseWrite(medias, medias.length);
+function instagram(i, tag) {
+  // console.log(tag);
+  ig.tag_media_recent(tag , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
+    loopMongooseWrite(medias, medias.length, tag);
   });
 }
 
 
-function loopMongooseWrite(medias, length) {
+function loopMongooseWrite(medias, length, tag) {
   for (var j = 0; j < length; j++) {
-    mongooseWrite(medias, j);
+    mongooseWrite(medias, j, tag);
   }
 }
 
 
-function mongooseWrite(medias, j) {
+function mongooseWrite(medias, j, tag) {
+    // console.log(tag);
 
     // Model.findOneAndUpdate([conditions], [update], [options], [callback])
     Attractions.findOneAndUpdate(
@@ -94,7 +115,7 @@ function mongooseWrite(medias, j) {
       pic_link:medias[j].link,
       img_link:medias[j].images.standard_resolution.url,
       likes:medias[j].likes.count,
-      tagName:medias[j].tags[0],
+      tagName:tag,
     }, // [callback] if document exists, callback--'found' will be null
       function (err, found) {
         // console.log("i = " + i);
@@ -112,7 +133,7 @@ function mongooseWrite(medias, j) {
             pic_link:medias[j].link,
             img_link:medias[j].images.standard_resolution.url,
             likes:medias[j].likes.count,
-            tagName:medias[j].tags[0],
+            tagName:tag,
           }, // [callback]
             function (err, createItem) {
               if(err) {
@@ -125,8 +146,70 @@ function mongooseWrite(medias, j) {
         }
     });
 }
+}
+var interval = setInterval(loop, 1000);
 
 
 
-// Export db
-module.exports = db;
+
+
+/*
+** Read from Database
+*/
+
+function delay () {
+var bestPics = [];
+
+for (var k = 0; k < attractionTag.length; k++) {
+  var bestPicsNow = mongooseLikes(attractionTag[k], k);
+  // console.log("***\n***\n***\n***\n***\n" + i);
+  // console.log(bestPicsNow);
+}
+                                                   
+function mongooseLikes(tag, k) {
+  // tag传进来了   console.log(tag);
+  // i传进来了     console.log(k);
+  Attractions.find(
+  {  // [conditions]
+      tagName:tag,
+    }, // [callback] 
+    function (err, pics) {
+      if(err) {
+          return console.log("MongoDB Error: " + err);
+        }
+        if(!pics) {
+          return console.log("No pic with tag " + tag);
+        }
+        else {
+          // console.log(pics);
+          // i传进来了    console.log(k);
+          // console.log(tag);
+          var mostLikesPic = mostLikes(pics, k); 
+          bestPics.push(mostLikesPic);
+          // console.log("***\n***\n***\n***\n***\n" + k);
+          console.log(bestPics);
+          return bestPics;
+        }
+    });
+}
+
+function mostLikes(pics, k) {
+  // i传进来了    console.log(k);
+  var best = pics[0];
+  // console.log("***\n***\n***\n***\n***\n" + k);
+  // console.log(best);
+
+  for (var p = 0; p < pics.length; p++) {
+    if (pics[p].likes > best.likes) {
+      best = pics[p];
+    }
+  }
+  // console.log(best);
+  return best;
+}
+
+        
+
+module.exports = bestPics;
+}
+var delayTime = setTimeout(delay, 3000);            
