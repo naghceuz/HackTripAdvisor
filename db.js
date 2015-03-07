@@ -47,6 +47,41 @@ ig.tag_media_recent('HackTripAdvisor', {min_tag_id:10}, function(err, medias, pa
 // );
 
 
+// Test Mongoose Write(not exist) and Update(exist)
+var attractionID = ['260732813','559886320','138975020','228499567'];
+
+for (i = 0; i < attractionID.length; i++) {
+
+  Attractions.findOneAndUpdate(
+  {
+    userid:attractionID[i],
+  },
+  {
+    username:"user" + 2 * i,
+  }, function (err, found) {
+    if(err) {
+      return console.log("MongoDB Error: " + err);
+    }
+    else if(!found) {
+      console.log("Not Exist");
+      Attractions.create (
+      {
+        username:"user" + i,
+        userid:attractionID[i],
+      }, function (err, createItem) {
+        if(err) {
+                return console.log("MongoDB Error: " + err);
+        }
+      });
+    }
+    else {
+      console.log("Exist");
+    }
+  });
+}
+
+
+
 
 // Export db
 module.exports = db;
