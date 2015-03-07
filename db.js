@@ -12,7 +12,7 @@ db.once('open', function (callback) {
 var AttractionSchema = new mongoose.Schema({
     userid:Number,
     username:String,
-    pic_id:Number,
+    // pic_id:Number,
     pic_link:String,
     img_link:String,
     likes:Number,
@@ -42,44 +42,29 @@ var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner',
 
 
 
-
+/*
+** Write into Databse
+*/
 for (var i = 0; i < attractionTag.length; i++) {
   instagram(i);
 }
 
 
-
-// ig.tag_media_recent("HackTripAdvisor" , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
-
-//     var mediasLength = medias.length;
-    
-//     console.log("Data length is " + mediasLength);
-//     console.log("userid = " + medias[0].user.id);
-//     console.log("username = " + medias[0].user.username);
-//     console.log("pic_id = " + medias[0].id);
-//     console.log("pic_link = " + medias[0].link);
-//     console.log("img_link = " + medias[0].images.standard_resolution.url);
-//     console.log("likes = " + medias[0].likes.count);
-//     console.log("tagName = " + medias[0].tags[0]);
-
-// });
-
-
 function instagram(i) {
   ig.tag_media_recent(attractionTag[i] , {max_tag_id:1}, function(err, medias, pagination, remaining, limit) {
-    loopMongooseWrite(medias, medias.length);
+    loopMongooseWrite(medias, medias.length, attractionTag[i]);
   });
 }
 
 
-function loopMongooseWrite(medias, length) {
+function loopMongooseWrite(medias, length, tag) {
   for (var j = 0; j < length; j++) {
-    mongooseWrite(medias, j);
+    mongooseWrite(medias, j, tag);
   }
 }
 
 
-function mongooseWrite(medias, j) {
+function mongooseWrite(medias, j, tag) {
 
     // Model.findOneAndUpdate([conditions], [update], [options], [callback])
     Attractions.findOneAndUpdate(
@@ -94,7 +79,7 @@ function mongooseWrite(medias, j) {
       pic_link:medias[j].link,
       img_link:medias[j].images.standard_resolution.url,
       likes:medias[j].likes.count,
-      tagName:medias[j].tags[0],
+      tagName:tag,
     }, // [callback] if document exists, callback--'found' will be null
       function (err, found) {
         // console.log("i = " + i);
@@ -112,7 +97,7 @@ function mongooseWrite(medias, j) {
             pic_link:medias[j].link,
             img_link:medias[j].images.standard_resolution.url,
             likes:medias[j].likes.count,
-            tagName:medias[j].tags[0],
+            tagName:tag,
           }, // [callback]
             function (err, createItem) {
               if(err) {
@@ -128,5 +113,60 @@ function mongooseWrite(medias, j) {
 
 
 
-// Export db
-module.exports = db;
+
+
+/*
+** Read from Database
+*/
+var bestPics = [];
+
+for (var i = 0; i < attractionTag.length; i++) {
+  var bestPicsNow = mongooseLikes(attractionTag[i], i);
+  // console.log("***\n***\n***\n***\n***\n" + i);
+  // console.log(bestPicsNow);
+}
+                                                   
+function mongooseLikes(tag, i) {
+  // tag传进来了   console.log(tag);
+  // i传进来了     console.log(i);
+  Attractions.find(
+  {  // [conditions]
+      tagName:tag,
+    }, // [callback] 
+    function (err, pics) {
+      if(err) {
+          return console.log("MongoDB Error: " + err);
+        }
+        if(!pics) {
+          return console.log("No pic with tag " + tag);
+        }
+        else {
+          // console.log(pics);
+          // i传进来了    console.log(i);
+          // console.log(tag);
+          var mostLikesPic = mostLikes(pics, i); 
+          bestPics.push(mostLikesPic);
+          // console.log("***\n***\n***\n***\n***\n" + i);
+          // console.log(bestPics);
+          return bestPics;
+        }
+    });
+}
+
+function mostLikes(pics, i) {
+  // i传进来了    console.log(i);
+  var best = pics[0];
+  // console.log("***\n***\n***\n***\n***\n" + i);
+  // console.log(best);
+
+  for (var j = 0; j < pics.length; j++) {
+    if (pics[j].likes > best.likes) {
+      best = pics[j];
+    }
+  }
+  // console.log(best);
+  return best;
+}
+                     
+
+module.exports = bestPics;

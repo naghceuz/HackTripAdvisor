@@ -14,7 +14,9 @@ var app = express();
 require('./db');
 
 // Call read.js
-require('./read');
+// require('./read');
+
+//console.log(display);
 
 
 // view engine setup
