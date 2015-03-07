@@ -30,9 +30,13 @@ ig.use({ client_id: '51c66ef6388449f1a5263daa554a373f',
 
 
 
-// require('./tripAdvisor');
 
 
+/*************
+**************
+**************/
+// Call tripAdvisor
+// var attractionTag = require('./tripAdvisor');
 var attractionTag = ['fenwaypark','mfa','IsabellaStewartGardner',
               'NewburyStreet','tdgarden'];
 

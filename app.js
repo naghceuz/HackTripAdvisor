@@ -13,6 +13,9 @@ var app = express();
 // Call db.js
 require('./db');
 
+// Call read.js
+require('./read');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
