@@ -119,12 +119,16 @@
 
 
 
-											<ul>
-											<% for(var i=0; i<productlist.length; i++) {%>
-											   <li><%= productlist[i].userid %> : <%= productlist[i].username %>
-											   </li>
-											<% } %>
-											</ul>
+										   <tbody>
+                   							 <% todos.forEach( function (todo){ %>
+               								 <tr>
+                    							    <td> 
+                       			     <%= todo.username %>
+                      						  </td>        
+
+               							 </tr>
+                   							 <% }); %>
+        									  </tbody>
 									
 
 								</div>
